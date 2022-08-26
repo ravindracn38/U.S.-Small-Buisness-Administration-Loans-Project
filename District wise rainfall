@@ -1,0 +1,78 @@
+select * from  district_wise_rainfall;
+
+--Understanding the table structure
+select COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, 
+       NUMERIC_PRECISION, DATETIME_PRECISION, 
+       IS_NULLABLE 
+from INFORMATION_SCHEMA.COLUMNS
+where TABLE_NAME='district_wise_rainfall'
+
+--no of NUlls
+select 
+sum(case when state_ut_name is null then 1 else 0 end) as state_ut,
+sum(case when district is null then 1 else 0 end) as district, 
+sum(case when jan is null then 1 else 0 end) as jan, 
+sum(case when feb is null then 1 else 0 end) as feb, 
+sum(case when mar is null then 1 else 0 end) as mar, 
+sum(case when apr is null then 1 else 0 end) as apr, 
+sum(case when may is null then 1 else 0 end) as may,
+sum(case when jun is null then 1 else 0 end) as jun,
+sum(case when jul is null then 1 else 0 end) as jul,
+sum(case when aug is null then 1 else 0 end) as aug,
+sum(case when sep is null then 1 else 0 end) as sep,
+sum(case when oct is null then 1 else 0 end) as oct, 
+sum(case when nov is null then 1 else 0 end) as nov, 
+sum(case when december is null then 1 else 0 end) as december, 
+sum(case when annual is null then 1 else 0 end) as annual, 
+sum(case when jan_feb is null then 1 else 0 end) as jan_feb,
+sum(case when mar_may is null then 1 else 0 end) as mar_may, 
+sum(case when jun_sep is null then 1 else 0 end) as jun_sep, 
+sum(case when oct_dec is null then 1 else 0 end) as oct_dec
+from district_wise_rainfall;
+
+--No. of Districts
+Select count(*) as No_of_Districts from district_wise_rainfall;
+
+--No. of States/Union teritories
+select distinct(STATE_UT_NAME)  as no_of_states from district_wise_rainfall;
+
+--no of districts in each state
+select distinct(STATE_UT_NAME) as State_UT, count (*) as no_of_districts from district_wise_rainfall group by State_UT order by  State_UT ;
+
+--Avg Rainfall across states monthwise
+select Distinct(STATE_UT_NAME), avg(jan) as Jan, avg(feb) as feb, avg(mar) as mar, avg(apr) as apr, avg(may) as may , avg(jun) as jun, avg(jul) as jul, avg(aug) as aug , avg(sep) as sep ,avg(oct) as oct , avg(nov) as nov , avg(december) as december , avg(annual) as annual from district_wise_rainfall group by STATE_UT_NAME order by state_ut_name
+
+--Monthwise States with highest avg rainfall 
+
+with x (state_ut_name, jan) as
+(
+	select Distinct(STATE_UT_NAME), avg(jan) as Jan, avg(feb) as feb, avg(mar) as mar, avg(apr) as apr, avg(may) as may , avg(jun) as jun, avg(jul) as jul, avg(aug) as aug , avg(sep) as sep ,avg(oct) as oct , avg(nov) as nov , avg(december) as december , avg(annual) as annual from district_wise_rainfall group by STATE_UT_NAME order by STATE_UT_NAME
+)
+Select state_ut_name ,(feb*0 +2) as month_no from x where feb=(select max(feb) from x)
+union
+Select state_ut_name ,(jan*0 +1) as month_no from x where jan=(select max(jan) from x)
+union
+Select state_ut_name ,(mar*0 +3) as month_no from x where mar=(select max(mar) from x)
+union
+Select state_ut_name ,(apr*0 +4) as month_no from x where apr=(select max(apr) from x)
+union
+Select state_ut_name ,(may*0 +5) as month_no from x where may=(select max(may) from x)
+union
+Select state_ut_name ,(jun*0 +6) as month_no from x where jun=(select max(jun) from x)
+union
+Select state_ut_name ,(jul*0 +7) as month_no from x where jul=(select max(jul) from x)
+union
+Select state_ut_name ,(aug*0 +8) as month_no from x where aug=(select max(aug) from x)
+union
+Select state_ut_name ,(sep*0 +9) as month_no from x where sep=(select max(sep) from x)
+union
+Select state_ut_name ,(oct*0 +10) as month_no from x where oct=(select max(oct) from x)
+union
+Select state_ut_name ,(nov*0 +11) as month_no from x where nov=(select max(nov) from x)
+union
+Select state_ut_name ,(december*0 +12) as month_no from x where december=(select max(december) from x)
+union
+Select state_ut_name ,(annual*0 +13) as month_no from x where annual=(select max(annual) from x)
+order by month_no asc
+
+
